@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Dimensions, StyleSheet, TouchableOpacity, ImageBackground, Image, TextInput, FlatList, ScrollView } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { connect } from 'react-redux';
 const { width } = Dimensions.get('screen')
 const myName = "Martina Wolna"
 const myPicUrl = require('../../assets/user.png')
@@ -27,17 +28,12 @@ class Chats extends React.Component {
   }
   _renderItem = ({ item }) => {
     const { navigation: { navigate } } = this.props
-    const data = {
-      recipentsName: item.name,
-      recipentsPicUrl: item.picUrl,
-      myPicUrl,
-      myName,
-    }
+    const {user} = item;
     return <TouchableOpacity
-      onPress={() => navigate('Chat', { data })}
+      onPress={() => navigate('Chat', { item })}
       style={styles.chatRoomContainer}>
-      <ImageBackground source={{ uri: item.picUrl }} style={styles.imageBackground}>
-        <Text numberOfLines={2} style={styles.name}>{item.name}</Text>
+      <ImageBackground source={{ uri: user.picUrl }} style={styles.imageBackground}>
+        <Text numberOfLines={2} style={styles.name}>{user.name}</Text>
         <TouchableOpacity>
           <Image source={require('../../assets/heart.png')} style={styles.heart} />
         </TouchableOpacity>
@@ -48,7 +44,7 @@ class Chats extends React.Component {
 
   }
   render() {
-    const { navigation: { navigate } } = this.props
+    const { navigation: { navigate },messages } = this.props
     const { search } = this.state
     return (
       <View style={styles.container}>
@@ -83,28 +79,23 @@ class Chats extends React.Component {
             contentContainerStyle={{ paddingLeft: 20, paddingRight: 5 }}
             showsHorizontalScrollIndicator={false}
             style={{ marginBottom: 20 }}
-            data={data1}
+            data={messages}
             horizontal
             renderItem={this._renderItem}
           />
           {
-            data2.map((user) => {
-              const data = {
-                recipentsName: user.name,
-                recipentsPicUrl: user.picUrl,
-                myPicUrl,
-                myName,
-              }
+            messages.map((item) => {
+              let {user,lastMessageTime,messages} = item;
               return <TouchableOpacity
-                onPress={() => navigate('Chat', {data})}
+                onPress={() => navigate('Chat', {item})}
                 style={styles.chatItem}>
                 <Image style={styles.chatProfile} source={{ uri: user.picUrl }} />
                 <View style={{ marginLeft: 15, flex: 1 }}>
                   <View style={styles.innerContainer}>
                     <Text numberOfLines={1} style={[styles.chatText, { flex: 1 }]}>{user.name}</Text>
-                    <Text numberOfLines={1} style={styles.chatText}>{user.time}</Text>
+                    <Text numberOfLines={1} style={styles.chatText}>{lastMessageTime}</Text>
                   </View>
-                  <Text numberOfLines={1} style={styles.message}>{user.message}</Text>
+                  <Text numberOfLines={1} style={styles.message}>{messages[messages.length-1].message}</Text>
                 </View>
               </TouchableOpacity>
             })
@@ -114,7 +105,14 @@ class Chats extends React.Component {
     );
   }
 }
-export default Chats
+
+function mapStateToProps(state){
+  return({
+    messages : state.messageReducer.messages
+  })
+}
+
+export default connect(mapStateToProps)(Chats)
 
 
 const styles = StyleSheet.create({

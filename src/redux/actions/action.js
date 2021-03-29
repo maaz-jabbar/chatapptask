@@ -1,5 +1,6 @@
-// export function changeMode(mode) {
-//     return (dispatch) => {
-//         dispatch({ type: 'CHANGE_MODE', payload: { mode } });
-//     }
-// }
+import {SEND_MESSAGE} from '../constants'
+export function sendMessage(userId,textMessage) {
+    return (dispatch) => {
+        dispatch({ type: SEND_MESSAGE, payload:{userId,textMessage} });
+    }
+}

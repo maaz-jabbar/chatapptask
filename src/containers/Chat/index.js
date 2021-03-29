@@ -1,24 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, FlatList } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { connect } from 'react-redux';
+import {sendMessage} from '../../redux/actions/action'
 
-const messages1 = [
-  { dateNew: "1 FEB 12:00" },
-  { message: "I commented on Figma, I want to add some fancy icons. Do you have any icon set?", sentBy: "recipent" },
-  { message: "I am in a process of designing some. When do you need them?", sentBy: "me" },
-  { dateNew: "1 FEB 12:00" },
-  { message: "Next month?", sentBy: "recipent" },
-  { message: "I am almost finish. Please give me your email, I will ZIP them and send you as son as im finish.", sentBy: "me" },
-  { message: "?", sentBy: "me" },
-  { dateNew: "1 FEB 12:00" },
-  { message: "maciej.kowalski@email.com", sentBy: "recipent" },
-  { message: "👍", sentBy: "me" },
-];
-
-class Chats extends React.Component {
+class Chat extends React.Component {
   state = {
     textMessage: "",
-    messages: messages1
   }
   _renderItem = ({ item, index }) => {
     if (item?.dateNew)
@@ -30,34 +18,35 @@ class Chats extends React.Component {
 
   }
   addMessage = () => {
-    const { textMessage, messages } = this.state
-    this.setState({ messages: [...messages, { message: textMessage, sentBy: 'me' }], textMessage: "" })
+    const { textMessage } = this.state
+    const {item:{user:{userId}}} = this.props.route.params
+    const { sendMessage } = this.props
+    this.setState({textMessage: "" })
+    sendMessage(userId,textMessage)
     setTimeout(() => {
       this.flatref.scrollToEnd({ animated: true })
     }, 100);
   }
 
   render() {
-    const { navigation: { navigate }, route: { params: { data } } } = this.props
-    const { textMessage, messages } = this.state
-    console.warn(data)
+    const {item:{messages,user}} = this.props.route.params
+    const { textMessage } = this.state
     return (
       <View style={styles.container}>
         <View style={styles.upperContainer}>
           <View style={styles.innerContainer}>
             <Image source={require('../../assets/user.png')} style={styles.profilePic} />
-            <Image source={{ uri: data.recipentsPicUrl }} style={[styles.profilePic, { marginLeft: 10 }]} />
+            <Image source={{ uri: user.picUrl }} style={[styles.profilePic, { marginLeft: 10 }]} />
           </View>
           <View style={{ alignItems: 'flex-end' }}>
 
             <Text style={[styles.name, { marginBottom: 5 }]}>Martina Wolna</Text>
-            <Text style={styles.name}>{data.recipentsName}</Text>
+            <Text style={styles.name}>{user.name}</Text>
           </View>
         </View>
         <FlatList
           ref={ref => this.flatref = ref}
           onLayout={() => this.flatref.scrollToEnd({ animated: true })}
-
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingVertical: 10 }}
           style={{ marginVertical: 10 }}
@@ -87,7 +76,19 @@ class Chats extends React.Component {
     );
   }
 }
-export default Chats
+function mapStateToProps(state){
+  return({
+    messages : state.messageReducer.messages
+  })
+}
+function mapDispatchToProps(dispatch){
+  return({
+    sendMessage: (userId,textMessage) => {
+      dispatch(sendMessage(userId,textMessage))
+  }  })
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Chat)
 
 
 const styles = StyleSheet.create({
