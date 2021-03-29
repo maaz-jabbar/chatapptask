@@ -3,24 +3,6 @@ import { View, Text, Dimensions, StyleSheet, TouchableOpacity, ImageBackground, 
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { connect } from 'react-redux';
 const { width } = Dimensions.get('screen')
-const myName = "Martina Wolna"
-const myPicUrl = require('../../assets/user.png')
-const data1 = [
-  { picUrl: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80", name: "Bożenka Malina" },
-  { picUrl: "https://images.unsplash.com/photo-1581382575275-97901c2635b7?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Anastazja Ziemkowska" },
-  { picUrl: "https://images.unsplash.com/photo-1557862921-37829c790f19?ixid=MXwxMjA3fDB8MHxzZWFyY2h8M3x8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Magdalena Pomorska" },
-  { picUrl: "https://images.unsplash.com/photo-1581803118522-7b72a50f7e9f?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Możenka Walina" },
-  { picUrl: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixid=MXwxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Odeusz Piotrowski" },
-  { picUrl: "https://images.unsplash.com/photo-1586083702768-190ae093d34d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTB8fG1hbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Maciej Orłowski" },
-]
-const data2 = [
-  { picUrl: "https://images.unsplash.com/photo-1586083702768-190ae093d34d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTB8fG1hbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Maciej Orłowski", time: "08:43", message: "maciej.kowalski@email.com" },
-  { picUrl: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixid=MXwxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Odeusz Piotrowski", time: "Tue", message: "Will do, super, thank you" },
-  { picUrl: "https://images.unsplash.com/photo-1581803118522-7b72a50f7e9f?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Możenka Walina", time: "Sun", message: "Uploaded file." },
-  { picUrl: "https://images.unsplash.com/photo-1557862921-37829c790f19?ixid=MXwxMjA3fDB8MHxzZWFyY2h8M3x8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Magdalena Pomorska", time: "23 March", message: "Here is another tutorial, if you..." },
-  { picUrl: "https://images.unsplash.com/photo-1581382575275-97901c2635b7?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60", name: "Anastazja Ziemkowska", time: "18 Mar", message: "😂" },
-  { picUrl: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80", name: "Bożenka Malina", time: "01 Feb", message: "no pracujemy z domu przez 5 ..." },
-]
 
 class Chats extends React.Component {
   state = {
@@ -44,13 +26,13 @@ class Chats extends React.Component {
 
   }
   render() {
-    const { navigation: { navigate },messages } = this.props
+    const { navigation: { navigate },messages,user } = this.props
     const { search } = this.state
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
-          <Image source={myPicUrl} style={styles.profile} />
-          <Text style={styles.profileText}>{myName}</Text>
+          <Image source={{uri:user.picUrl}} style={styles.profile} />
+          <Text style={styles.profileText}>{user.name}</Text>
         </View>
         <View style={styles.innerContainer}>
           <View style={styles.searchContainer}>
@@ -108,7 +90,8 @@ class Chats extends React.Component {
 
 function mapStateToProps(state){
   return({
-    messages : state.messageReducer.messages
+    messages : state.messageReducer.messages,
+    user : state.messageReducer.user
   })
 }
 

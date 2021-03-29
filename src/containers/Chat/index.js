@@ -31,16 +31,17 @@ class Chat extends React.Component {
   render() {
     const {item:{messages,user}} = this.props.route.params
     const { textMessage } = this.state
+    const { user : me } = this.props
     return (
       <View style={styles.container}>
         <View style={styles.upperContainer}>
           <View style={styles.innerContainer}>
-            <Image source={require('../../assets/user.png')} style={styles.profilePic} />
+            <Image source={{uri:me.picUrl}} style={styles.profilePic} />
             <Image source={{ uri: user.picUrl }} style={[styles.profilePic, { marginLeft: 10 }]} />
           </View>
           <View style={{ alignItems: 'flex-end' }}>
 
-            <Text style={[styles.name, { marginBottom: 5 }]}>Martina Wolna</Text>
+            <Text style={[styles.name, { marginBottom: 5 }]}>{me.name}</Text>
             <Text style={styles.name}>{user.name}</Text>
           </View>
         </View>
@@ -78,7 +79,8 @@ class Chat extends React.Component {
 }
 function mapStateToProps(state){
   return({
-    messages : state.messageReducer.messages
+    messages : state.messageReducer.messages,
+    user : state.messageReducer.user
   })
 }
 function mapDispatchToProps(dispatch){
