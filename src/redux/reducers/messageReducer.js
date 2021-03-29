@@ -1,4 +1,3 @@
-import { useCardAnimation } from '@react-navigation/stack';
 import messages from './messages'
 import {SEND_MESSAGE} from '../constants'
 
